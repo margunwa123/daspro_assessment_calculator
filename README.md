@@ -27,9 +27,9 @@ assessment teman temannya
 | 23-12-2019 | dsadsa.gmail.com | 13519112     | 20              | 13519222    | 35          | ... |
 
 **tabel penilaian seperti diatas ini:** (diambil dari gsheet)<br/> bila ada yang
-berbeda, misal tabel email ga dipake atau indexnya beda, di tabel constant ganti
-indeksnya ke indeks yg sesuai, misal tabel yg gapenting (kyk email sm timestamp)
-ga kepake, kasih indeks asal aja (gabakal ngaruh sama hasil akhir)
+berbeda, misal tabel email ga dipake atau indexnya beda, di constant.py ganti
+nilai variabel ke indeks yg sesuai, misal tabel yg gapenting (kyk email sm
+timestamp) ga kepake, kasih indeks asal aja (gabakal ngaruh sama hasil akhir)
 
 ### intinya, misal indeks beda, ganti di constant.py tapi jangan hapus variabelnya
 
