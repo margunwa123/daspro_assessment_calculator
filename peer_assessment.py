@@ -5,9 +5,8 @@ from dataclasses import dataclass
 from constant import *
 import re
 
-class NilaiOrang:
-  def __init__(self, nim):
-    self.nim = nim
+class ListOfNilai:
+  def __init__(self):
     self.arrNilai = []
   
   def addNilai(self, nilai):
@@ -20,7 +19,7 @@ class NilaiOrang:
       return 0
   
   def printAverage(self):
-    print(f"Rata rata nilai dari peer NIM {self.nim} adalah {self.getAvg()}")
+    print(f"Rata rata peer adalah {self.getAvg()}")
 
 class CsvRow:
   def __init__(self, data):
@@ -30,29 +29,43 @@ class CsvRow:
     self.nilai_sendiri = data[NILAI_SENDIRI]
     self.mulai_nilai_temen = data[MULAI_NIM_TEMEN:]
 
-def generateOrangs(nimList):
-  orangs = [NilaiOrang(nim) for nim in nimList]
-  return orangs
+class CsvPeerAssessor:
+  def __init__(self, filename):
+    with open(filename) as csv_file:
+      self.data = []
+      for row in csv.reader(csv_file, delimiter=','):
+        self.data.append(row)
 
-def checkIfNim(nim):
-  span = re.match("^[0-9]*", nim).span()
-  NIMLength = 8
+  def initiateNIMList(self):
+    self.nimList = []
+    i = 1
+    while(True):
+      nim = input(f"Masukan NIM ke - {i} (ketik 'stop' untuk berhenti):")
+      if(nim == "stop"):
+        break
+      elif(not self.checkIfNim(nim)):
+        print("Wrong NIM format")
+      else:
+        self.nimList.append(nim)
+      i += 1
 
-  # check if number
-  if(span == (0, 0)):
-    return False
-  # check length
-  if(span[1] - span[0] != NIMLength):
-    return False
-  return True
+  def checkIfNim(self, nim):
+    span = re.match("^[0-9]*", nim).span()
+    NIMLength = 8
 
-def getAvgOfNIM(nim):
-  with open(sys.argv[1]) as csv_file:
-      NIMOrang = nim
-      nilaiOrang = NilaiOrang(NIMOrang)
-      csv_reader = csv.reader(csv_file, delimiter=',')
+    # check if number
+    if(span == (0, 0)):
+      return False
+    # check length
+    if(span[1] - span[0] != NIMLength):
+      return False
+    return True
+
+  def printAvgFromNIMList(self):
+    for nim in self.nimList:
+      listOfNilai = ListOfNilai()
       line_count = 0
-      for row in csv_reader:
+      for row in self.data:
           if line_count == 0:
             line_count += 1
           else:
@@ -61,14 +74,14 @@ def getAvgOfNIM(nim):
             for csvData in csvRow.mulai_nilai_temen:
               if(isNilai == True):
                 isNilai = False
-                nilaiOrang.addNilai(csvData)
-              elif(checkIfNim(csvData)):
-                if(csvData == nilaiOrang.nim):
+                listOfNilai.addNilai(csvData)
+              elif(csvData == nim):
                   isNilai = True
           line_count += 1
-      nilaiOrang.printAverage()
+      print()
+      print(f"Nilai rata rata dari NIM {nim} adalah {listOfNilai.getAvg()}")
 
 if __name__ == "__main__":
-  listOfNim = sys.argv[2].split(",")
-  for nim in listOfNim:
-    getAvgOfNIM(nim)
+  peerAssessor = CsvPeerAssessor(sys.argv[1])
+  peerAssessor.initiateNIMList()
+  peerAssessor.printAvgFromNIMList()
